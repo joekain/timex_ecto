@@ -36,6 +36,12 @@ defmodule Timex.Ecto.DateTimeWithTimezone do
   @doc """
   Handle casting to Timex.Ecto.DateTimeWithTimezone
   """
+  def cast(input) when is_binary(input) do
+    case DateFormat.parse(input, "{ISO}") do
+      {:ok, datetime} -> {:ok, datetime}
+      {:error, _}     -> :error
+    end
+  end
   def cast(%DateTime{timezone: nil} = datetime), do: {:ok, %{datetime | :timezone => %TimezoneInfo{}}}
   def cast(%DateTime{} = datetime), do: {:ok, datetime}
   def cast(_), do: :error
@@ -66,4 +72,3 @@ defmodule Timex.Ecto.DateTimeWithTimezone do
   end
   def dump(_), do: :error
 end
-
